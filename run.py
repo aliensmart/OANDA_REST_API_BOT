@@ -1,5 +1,5 @@
 import os
-from Strategies.OANDA_MACD import MACD_RENKO
+from Strategies.EMA_MACD import Ema_Macd
 from Oanda_api.Oanda_api import Oanda_api
 import time
 
@@ -13,50 +13,53 @@ pos_size = 2000
 token = os.environ.get("OANDA_DEMO_API")
 account_id = "101-001-14058319-001"
 api = Oanda_api(token, account_id)
-macd_renko = MACD_RENKO()
+
 
 
 def main():
     global pairs
-# try:
-    open_trades = api.get_trades()
+    try:
+        open_trades = api.get_trades()
 
-    for i in range(len(open_trades)):    
-        print("trading... ", open_trades[i]['instrument'])
-    for currency in pairs:
-        print("analyzing ",currency)
-        is_buy = api.is_buy(currency)
-        data = api.data(currency)
-        ohlc  = data
-        ohlc.columns = ["Open","High","Low","Close","Volume"]
-        trade_signal = macd_renko.trade_signal(macd_renko.renko_merge(ohlc), is_buy)
-        signal = trade_signal
-        
-        if signal == "Buy":
-            api.buy(currency, (macd_renko.ATR2(ohlc, 14)), pos_size)
-            print("New long position initiated for ", currency)
+        for i in range(len(open_trades)):    
+            print("trading... ", open_trades[i]['instrument'])
+        for currency in pairs:
+            print("analyzing ",currency)
+            is_buy = api.is_buy(currency)
+            data = api.data(currency)
+            ohlc  = data
+            ohlc.columns = ["Open","High","Low","Close","Volume"]
+            ema_macd = Ema_Macd(ohlc)
+            ema_macd = ema_macd.EMA(8, 14)
+            ema_macd = ema_macd.MACD(12, 26, 9)
+            trade_signal = ema_macd.trade_signal(is_buy)
+            signal = trade_signal
             
-        elif signal == "Sell":
-            api.sell(currency, (macd_renko.ATR2(ohlc, 14)), pos_size)
-            print("New short position initiated for ", currency)
-            
-        elif signal == "Close":
-            api.close(currency)
-            print("closing all positon for ", currency)
+            if signal == "Buy":
+                api.buy(currency, (ema_macd.ATR(14)), pos_size)
+                print("New long position initiated for ", currency)
                 
-        elif signal == "Close_Buy":
-            api.close(currency)
-            print("Existing Short position closed for ", currency)
-            api.buy(currency, (macd_renko.ATR2(ohlc, 14)), pos_size)
-            print("New long position initiated for ", currency)
-            
-        elif signal == "Close_Sell":
-            api.close(currency)
-            print("Existing long position closed for ", currency)
-            api.sell(currency, (2*macd_renko.ATR2(ohlc, 14)), pos_size)
-            print("New short position initiated for ", currency)
-# except:
-#     print("error encountered....skipping this iteration")
+            elif signal == "Sell":
+                api.sell(currency, (ema_macd.ATR(14)), pos_size)
+                print("New short position initiated for ", currency)
+                
+            elif signal == "Close":
+                api.close(currency)
+                print("closing all positon for ", currency)
+                    
+            # elif signal == "Close_Buy":
+            #     api.close(currency)
+            #     print("Existing Short position closed for ", currency)
+            #     api.buy(currency, (macd_renko.ATR2(ohlc, 14)), pos_size)
+            #     print("New long position initiated for ", currency)
+                
+            # elif signal == "Close_Sell":
+            #     api.close(currency)
+            #     print("Existing long position closed for ", currency)
+            #     api.sell(currency, (2*macd_renko.ATR2(ohlc, 14)), pos_size)
+            #     print("New short position initiated for ", currency)
+    except:
+        print("error encountered....skipping this iteration")
 
 
 # Continuous execution        
