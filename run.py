@@ -36,11 +36,11 @@ def main():
             signal = trade_signal
             
             if signal == "Buy":
-                api.buy(currency, 1.5*(ema_macd.ATR(ohlc,14)), pos_size)
+                api.buy(currency, (ema_macd.ATR(ohlc,14)), pos_size)
                 print("New long position initiated for ", currency)
                 
             elif signal == "Sell":
-                api.sell(currency, 1.5*(ema_macd.ATR(ohlc,14)), pos_size)
+                api.sell(currency, (ema_macd.ATR(ohlc,14)), pos_size)
                 print("New short position initiated for ", currency)
                 
             elif signal == "Close":

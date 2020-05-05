@@ -24,7 +24,10 @@ class Ema_Macd:
         df['ATR'] = df['TR'].rolling(n).mean()
         #df['ATR'] = df['TR'].ewm(span=n,adjust=False,min_periods=n).mean()
         df2 = df.drop(['H-L','H-PC','L-PC'],axis=1)
-        return round(df2["ATR"][-1], 4)
+        if df2["ATR"][-1] <0.001:
+            return 0.001
+        else:
+            return round(df2["ATR"][-1], 3)
 
 
     def MACD(self, df ,a,b,c):
@@ -42,18 +45,11 @@ class Ema_Macd:
         "function to generate signal"
         signal = ""
         if is_buy == None:
-            if df['EMA_fast'][-1] > df['EMA_slow'][-1] and  df['EMA_fast'][-2] > df['EMA_slow'][-2] and df["MACD"][-1] > df["Signal"][-1] and df["MACD"][-2] > df["Signal"][-2]:
-                if df['EMA_fast'][-6] < df['EMA_slow'][-6]:
+            if df['EMA_fast'][-1] > df['EMA_slow'][-1] and  df['EMA_fast'][-2] > df['EMA_slow'][-2]:
+                if df['EMA_fast'][-4] < df['EMA_slow'][-4]:
                     signal = "Buy"
-            if df['EMA_fast'][-1] < df['EMA_slow'][-1] and  df['EMA_fast'][-2] < df['EMA_slow'][-2] and df["MACD"][-1] < df["Signal"][-1] and df["MACD"][-2] < df["Signal"][-2]:
-                if df['EMA_fast'][-6] > df['EMA_slow'][-6]:
+            if df['EMA_fast'][-1] < df['EMA_slow'][-1] and  df['EMA_fast'][-2] < df['EMA_slow'][-2]:
+                if df['EMA_fast'][-4] > df['EMA_slow'][-4]:
                     signal = "Sell"
-                
-        elif is_buy == True:
-            if df['EMA_fast'][-1] < df['EMA_fast'][-1] or df["MACD"][-1] < df["Signal"][-1]:
-                signal = "Close"
-        elif is_buy == False:
-            if df['EMA_fast'][-1] > df['EMA_fast'][-1] or df["MACD"][-1] > df["Signal"][-1]:
-                signal = "Close"
 
         return signal
