@@ -29,18 +29,18 @@ def main():
             data = api.data(currency)
             ohlc  = data
             ohlc.columns = ["Open","High","Low","Close","Volume"]
-            ema_macd = Ema_Macd(ohlc)
-            ema_macd = ema_macd.EMA(8, 14)
-            ema_macd = ema_macd.MACD(12, 26, 9)
-            trade_signal = ema_macd.trade_signal(is_buy)
+            ema_macd = Ema_Macd()
+            ohlc = ema_macd.EMA(ohlc, 8, 14)
+            ohlc = ema_macd.MACD(ohlc, 12, 26, 9)
+            trade_signal = ema_macd.trade_signal(ohlc, is_buy)
             signal = trade_signal
             
             if signal == "Buy":
-                api.buy(currency, (ema_macd.ATR(14)), pos_size)
+                api.buy(currency, 1.5*(ema_macd.ATR(ohlc,14)), pos_size)
                 print("New long position initiated for ", currency)
                 
             elif signal == "Sell":
-                api.sell(currency, (ema_macd.ATR(14)), pos_size)
+                api.sell(currency, 1.5*(ema_macd.ATR(ohlc,14)), pos_size)
                 print("New short position initiated for ", currency)
                 
             elif signal == "Close":
