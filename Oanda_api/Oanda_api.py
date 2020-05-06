@@ -76,9 +76,11 @@ class Oanda_api:
         if self.is_buy(instrument)==True:
             close_posit = positions.PositionClose(accountID=self.id, instrument=instrument, data=data_long)
             self.client.request(close_posit)
+            print("Closing all long positions ", instrument)
         if self.is_buy(instrument)==False:
             close_posit = positions.PositionClose(accountID=self.id, instrument=instrument, data=data_short)
             self.client.request(close_posit)
+            print("Closing all Short positions ", instrument)
 
     
     def get_trades(self):

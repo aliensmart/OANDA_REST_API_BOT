@@ -42,6 +42,8 @@ def main():
             elif signal == "Sell":
                 api.sell(currency, 2*(ema_macd.ATR(ohlc,14)), pos_size)
                 print("New short position initiated for ", currency)
+            elif signal == "Close":
+                api.close(currency)
     except:
         print("error encountered....skipping this iteration")
 
