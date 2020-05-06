@@ -51,5 +51,13 @@ class Ema_Macd:
             if df['EMA_fast'][-1] < df['EMA_slow'][-1] and  df['EMA_fast'][-2] < df['EMA_slow'][-2]:
                 if df['EMA_fast'][-4] > df['EMA_slow'][-4]:
                     signal = "Sell"
+        if is_buy == True:
+            if df['EMA_fast'][-1] < df['EMA_slow'][-1]:
+                signal = "Close"
+
+        if is_buy == False:
+            if df['EMA_fast'][-1] > df['EMA_slow'][-1]:
+                signal = "Close"
+
 
         return signal

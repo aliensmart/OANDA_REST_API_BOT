@@ -36,28 +36,12 @@ def main():
             signal = trade_signal
             
             if signal == "Buy":
-                api.buy(currency, (ema_macd.ATR(ohlc,14)), pos_size)
+                api.buy(currency, 2*(ema_macd.ATR(ohlc,14)), pos_size)
                 print("New long position initiated for ", currency)
                 
             elif signal == "Sell":
-                api.sell(currency, (ema_macd.ATR(ohlc,14)), pos_size)
+                api.sell(currency, 2*(ema_macd.ATR(ohlc,14)), pos_size)
                 print("New short position initiated for ", currency)
-                
-            elif signal == "Close":
-                api.close(currency)
-                print("closing all positon for ", currency)
-                    
-            # elif signal == "Close_Buy":
-            #     api.close(currency)
-            #     print("Existing Short position closed for ", currency)
-            #     api.buy(currency, (macd_renko.ATR2(ohlc, 14)), pos_size)
-            #     print("New long position initiated for ", currency)
-                
-            # elif signal == "Close_Sell":
-            #     api.close(currency)
-            #     print("Existing long position closed for ", currency)
-            #     api.sell(currency, (2*macd_renko.ATR2(ohlc, 14)), pos_size)
-            #     print("New short position initiated for ", currency)
     except:
         print("error encountered....skipping this iteration")
 
