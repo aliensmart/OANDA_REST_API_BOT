@@ -36,11 +36,11 @@ def main():
             signal = trade_signal
             
             if signal == "Buy":
-                api.buy(currency, 2*(ema_macd.ATR(ohlc,14)), pos_size)
+                api.buy(currency, 1.5*(ema_macd.ATR(ohlc,14)), pos_size)
                 print("New long position initiated for ", currency)
                 
             elif signal == "Sell":
-                api.sell(currency, 2*(ema_macd.ATR(ohlc,14)), pos_size)
+                api.sell(currency, 15*(ema_macd.ATR(ohlc,14)), pos_size)
                 print("New short position initiated for ", currency)
             elif signal == "Close":
                 api.close(currency)
@@ -55,7 +55,7 @@ while time.time() <= timeout:
     try:
         print("passthrough at ",time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
         main()
-        time.sleep(60 - ((time.time() - starttime) % 60.0)) # 1 minute interval between each new execution
+        time.sleep(300 - ((time.time() - starttime) % 300.0)) # 1 minute interval between each new execution
     except KeyboardInterrupt:
         print('\n\nKeyboard exception received. Exiting.')
         exit()

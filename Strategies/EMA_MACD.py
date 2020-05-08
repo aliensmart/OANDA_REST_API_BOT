@@ -24,8 +24,8 @@ class Ema_Macd:
         df['ATR'] = df['TR'].rolling(n).mean()
         #df['ATR'] = df['TR'].ewm(span=n,adjust=False,min_periods=n).mean()
         df2 = df.drop(['H-L','H-PC','L-PC'],axis=1)
-        if df2["ATR"][-1] <0.001:
-            return 0.001
+        if df2["ATR"][-1] <=0.001:
+            return 0.002
         else:
             return round(df2["ATR"][-1], 3)
 
