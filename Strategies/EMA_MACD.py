@@ -24,7 +24,7 @@ class Ema_Macd:
         df['ATR'] = df['TR'].rolling(n).mean()
         #df['ATR'] = df['TR'].ewm(span=n,adjust=False,min_periods=n).mean()
         df2 = df.drop(['H-L','H-PC','L-PC'],axis=1)
-        if df2["ATR"][-1] <=0.001:
+        if df2["ATR"][-1] <=0.002:
             return 0.002
         else:
             return round(df2["ATR"][-1], 3)
@@ -46,10 +46,10 @@ class Ema_Macd:
         signal = ""
         if is_buy == None:
             if df['EMA_fast'][-1] > df['EMA_slow'][-1] and  df['EMA_fast'][-2] > df['EMA_slow'][-2]:
-                if df['EMA_fast'][-4] < df['EMA_slow'][-4]:
+                if df['EMA_fast'][-3] < df['EMA_slow'][-3]:
                     signal = "Buy"
             if df['EMA_fast'][-1] < df['EMA_slow'][-1] and  df['EMA_fast'][-2] < df['EMA_slow'][-2]:
-                if df['EMA_fast'][-4] > df['EMA_slow'][-4]:
+                if df['EMA_fast'][-3] > df['EMA_slow'][-3]:
                     signal = "Sell"
         if is_buy == True:
             if df['EMA_fast'][-1] < df['EMA_slow'][-1]:

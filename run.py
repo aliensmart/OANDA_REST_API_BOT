@@ -9,7 +9,7 @@ import time
 
 pairs = ['EUR_USD','GBP_USD', 'AUD_USD', 'USD_JPY', 'EUR_JPY'] #currency pairs to be included in the strategy
 #pairs = ['EUR_JPY','USD_JPY','AUD_JPY','AUD_USD','AUD_NZD','NZD_USD']
-pos_size = 2000
+pos_size = 200
 token = os.environ.get("OANDA_DEMO_API")
 account_id = "101-001-14058319-001"
 api = Oanda_api(token, account_id)
@@ -30,17 +30,17 @@ def main():
             ohlc  = data
             ohlc.columns = ["Open","High","Low","Close","Volume"]
             ema_macd = Ema_Macd()
-            ohlc = ema_macd.EMA(ohlc, 8, 14)
+            ohlc = ema_macd.EMA(ohlc, 20, 50)
             ohlc = ema_macd.MACD(ohlc, 12, 26, 9)
             trade_signal = ema_macd.trade_signal(ohlc, is_buy)
             signal = trade_signal
             
             if signal == "Buy":
-                api.buy(currency, 1.5*(ema_macd.ATR(ohlc,14)), pos_size)
+                api.buy(currency, (ema_macd.ATR(ohlc,14)), pos_size)
                 print("New long position initiated for ", currency)
                 
             elif signal == "Sell":
-                api.sell(currency, 15*(ema_macd.ATR(ohlc,14)), pos_size)
+                api.sell(currency, (ema_macd.ATR(ohlc,14)), pos_size)
                 print("New short position initiated for ", currency)
             elif signal == "Close":
                 api.close(currency)
